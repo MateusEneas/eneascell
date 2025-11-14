@@ -7,6 +7,8 @@ import com.eneas.eneascell.product.domain.Product;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.usecase.CreateProductUseCase;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ public class ProductController {
     private CreateProductUseCase createProductUseCase;
 
     @PostMapping("/")
-    public ResponseEntity<Object> createProduct(@RequestBody ProductDTO productDto) {
+    public ResponseEntity<Object> createProduct(@Valid @RequestBody ProductDTO productDto) {
 
         Product product = new Product();
         product.setNome(productDto.getNome());
