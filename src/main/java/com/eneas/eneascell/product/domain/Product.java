@@ -1,4 +1,4 @@
-package com.eneas.eneascell.domain;
+package com.eneas.eneascell.product.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,10 +1,11 @@
-package com.eneas.eneascell.controllers;
+package com.eneas.eneascell.product.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eneas.eneascell.domain.Product;
-import com.eneas.eneascell.usecase.CreateProductUseCase;
+import com.eneas.eneascell.product.domain.Product;
+import com.eneas.eneascell.product.dto.ProductDTO;
+import com.eneas.eneascell.product.usecase.CreateProductUseCase;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,14 @@ public class ProductController {
     @Autowired
     private CreateProductUseCase createProductUseCase;
 
-    @PostMapping("/src")
-    public ResponseEntity<Object> createProduct(@RequestBody Product product) {
+    @PostMapping("/")
+    public ResponseEntity<Object> createProduct(@RequestBody ProductDTO productDto) {
         try {
+            Product product = new Product();
+            product.setNome(productDto.getNome());
+            product.setPreco(productDto.getPreco());
+            product.setQuantidade(productDto.getQuantidade());
+            product.setDescricao(productDto.getDescricao());
             var result = this.createProductUseCase.execute(product);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
