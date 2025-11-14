@@ -21,17 +21,15 @@ public class ProductController {
 
     @PostMapping("/")
     public ResponseEntity<Object> createProduct(@RequestBody ProductDTO productDto) {
-        try {
-            Product product = new Product();
-            product.setNome(productDto.getNome());
-            product.setPreco(productDto.getPreco());
-            product.setQuantidade(productDto.getQuantidade());
-            product.setDescricao(productDto.getDescricao());
-            var result = this.createProductUseCase.execute(product);
-            return ResponseEntity.ok().body(result);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
+        Product product = new Product();
+        product.setNome(productDto.getNome());
+        product.setPreco(productDto.getPreco());
+        product.setQuantidade(productDto.getQuantidade());
+        product.setDescricao(productDto.getDescricao());
+        var result = this.createProductUseCase.execute(product);
+        return ResponseEntity.ok().body(result);
+
     }
 
 }

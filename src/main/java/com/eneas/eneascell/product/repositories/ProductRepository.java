@@ -8,4 +8,6 @@ import com.eneas.eneascell.product.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
+    Product findByNome(String nome);
+
 }
