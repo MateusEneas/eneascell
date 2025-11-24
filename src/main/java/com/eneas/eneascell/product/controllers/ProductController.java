@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.eneas.eneascell.product.usecase.CreateProductUseCase;
 import com.eneas.eneascell.product.usecase.DeleteByIdUseCase;
 import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
 import com.eneas.eneascell.product.usecase.ListProductUseCase;
+import com.eneas.eneascell.product.usecase.UpdateProductUseCase;
 
 import jakarta.validation.Valid;
 
@@ -36,6 +38,9 @@ public class ProductController {
 
     @Autowired
     private DeleteByIdUseCase deleteByIdUseCase;
+
+    @Autowired
+    private UpdateProductUseCase updateProductUseCase;
 
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDto) {
@@ -61,6 +66,12 @@ public class ProductController {
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         deleteByIdUseCase.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductDTO> update(@PathVariable UUID id, @RequestBody ProductDTO dto) {
+        ProductDTO update = updateProductUseCase.execute(id, dto);
+        return ResponseEntity.ok().body(update);
     }
 
 }
