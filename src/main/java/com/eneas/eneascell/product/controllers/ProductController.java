@@ -1,19 +1,6 @@
 package com.eneas.eneascell.product.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.eneas.eneascell.product.domain.Product;
-import com.eneas.eneascell.product.dto.ProductDTO;
-import com.eneas.eneascell.product.usecase.CreateProductUseCase;
-import com.eneas.eneascell.product.usecase.DeleteByIdUseCase;
-import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
-import com.eneas.eneascell.product.usecase.ListProductUseCase;
-
-import jakarta.validation.Valid;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eneas.eneascell.product.dto.ProductDTO;
+import com.eneas.eneascell.product.usecase.CreateProductUseCase;
+import com.eneas.eneascell.product.usecase.DeleteByIdUseCase;
+import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
+import com.eneas.eneascell.product.usecase.ListProductUseCase;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/produto")
