@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eneas.eneascell.product.domain.Product;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.usecase.CreateProductUseCase;
+import com.eneas.eneascell.product.usecase.DeleteByIdUseCase;
 import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
 import com.eneas.eneascell.product.usecase.ListProductUseCase;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,8 +37,11 @@ public class ProductController {
     @Autowired
     private ListByIdProductUseCase listByIdProductUseCase;
 
+    @Autowired
+    private DeleteByIdUseCase deleteByIdUseCase;
+
     @PostMapping("/")
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDTO productDto) {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDto) {
 
         var result = this.createProductUseCase.execute(productDto);
         return ResponseEntity.ok().body(result);
@@ -51,8 +56,14 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> listById(@PathVariable UUID id) {
-        Optional<ProductDTO> dto = listByIdProductUseCase.execute(id);
-        return dto.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        ProductDTO dto = listByIdProductUseCase.execute(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        deleteByIdUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -6,7 +6,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eneas.eneascell.exceptions.BusinessException;
 import com.eneas.eneascell.product.dto.ProductDTO;
+import com.eneas.eneascell.product.mapper.ProductMapper;
 import com.eneas.eneascell.product.repositories.ProductRepository;
 
 @Service
@@ -15,13 +17,14 @@ public class ListByIdProductUseCase {
     @Autowired
     private ProductRepository productRepository;
 
-    public Optional<ProductDTO> execute(UUID id) {
+    @Autowired
+    private ProductMapper mapper;
 
-        return productRepository.findById(id)
-                .map(product -> new ProductDTO(
-                        product.getNome(),
-                        product.getPreco(),
-                        product.getQuantidade(),
-                        product.getDescricao()));
+    public ProductDTO execute(UUID id) {
+
+        var product = productRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Produto não encontrado!"));
+
+        return mapper.toDTO(product);
     }
 }
