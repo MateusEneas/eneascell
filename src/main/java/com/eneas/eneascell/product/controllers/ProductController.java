@@ -74,9 +74,17 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> paginate(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "nome") String sort) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sort));
+            @RequestParam(defaultValue = "nome") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
         Page<ProductDTO> result = listProductPaginatedUseCase.execute(pageRequest);
+
         return ResponseEntity.ok(result);
     }
 
