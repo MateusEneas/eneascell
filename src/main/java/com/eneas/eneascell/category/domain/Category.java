@@ -19,7 +19,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
+    private String nome;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,6 +1,6 @@
 package com.eneas.eneascell.category.controllers;
 
-import com.eneas.eneascell.category.domain.Category;
+import com.eneas.eneascell.category.dto.CategoryDTO;
 import com.eneas.eneascell.category.usecase.ListCategoryUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,9 @@ public class CategoryController {
     private ListCategoryUseCase listCategoryUseCase;
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAll() {
-        List<Category> list = listCategoryUseCase.findAll();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<List<CategoryDTO>> listCategory() {
+        var result = this.listCategoryUseCase.execute();
+        return ResponseEntity.ok(result);
     }
 
 }
