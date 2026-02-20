@@ -78,20 +78,17 @@ public class ProductController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<ProductDTO>> paginate(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "nome") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
+            Pageable pageable) {
 
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+        int maxSize = 50;
 
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        Pageable safePageable = PageRequest.of(pageable.getPageNumber(),
+                Math.min(pageable.getPageSize(), maxSize),
+                pageable.getSort());
 
-        Page<ProductDTO> result = listProductPaginatedUseCase.execute(pageRequest);
+        Page<ProductDTO> result = listProductPaginatedUseCase.execute(safePageable);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/filter")
@@ -99,14 +96,15 @@ public class ProductController {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) BigDecimal precoMin,
             @RequestParam(required = false) BigDecimal precoMax,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "nome") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
+            Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sortBy);
+        int maxSize = 50;
 
-        Page<ProductDTO> result = filterProductUseCase.execute(nome, precoMin, precoMax, pageable);
+        Pageable safePageable = PageRequest.of(pageable.getPageNumber(),
+                Math.min(pageable.getPageSize(), maxSize),
+                pageable.getSort());
+
+        Page<ProductDTO> result = filterProductUseCase.execute(nome, precoMin, precoMax, safePageable);
 
         return ResponseEntity.ok(result);
     }
