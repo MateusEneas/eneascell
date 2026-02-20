@@ -1,36 +1,28 @@
 package com.eneas.eneascell.category.domain;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
+@Entity
+@Table(name = "category")
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String name;
 
-    public Category() {
-    }
-
-    public Category(UUID id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Override
     public boolean equals(Object o) {
