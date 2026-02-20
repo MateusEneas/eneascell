@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.mapper.ProductMapper;
 import com.eneas.eneascell.product.repositories.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ListProductPaginatedUseCase {
 
     @Autowired
