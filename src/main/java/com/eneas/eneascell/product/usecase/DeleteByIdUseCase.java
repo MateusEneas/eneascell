@@ -1,14 +1,15 @@
 package com.eneas.eneascell.product.usecase;
 
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.eneas.eneascell.exceptions.NotFoundException;
 import com.eneas.eneascell.product.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
+@Transactional
 public class DeleteByIdUseCase {
 
     @Autowired
