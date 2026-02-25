@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class DeleteByIdUseCase {
+public class DeleteProductByIdUseCase {
 
     @Autowired
     private ProductRepository productRepository;

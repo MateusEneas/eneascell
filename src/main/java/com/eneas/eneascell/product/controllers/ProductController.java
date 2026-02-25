@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.usecase.CreateProductUseCase;
-import com.eneas.eneascell.product.usecase.DeleteByIdUseCase;
+import com.eneas.eneascell.product.usecase.DeleteProductByIdUseCase;
 import com.eneas.eneascell.product.usecase.FilterProductUseCase;
 import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
 import com.eneas.eneascell.product.usecase.ListProductPaginatedUseCase;
@@ -48,7 +47,7 @@ public class ProductController {
     private ListByIdProductUseCase listByIdProductUseCase;
 
     @Autowired
-    private DeleteByIdUseCase deleteByIdUseCase;
+    private DeleteProductByIdUseCase deleteProductByIdUseCase;
 
     @Autowired
     private UpdateProductUseCase updateProductUseCase;
@@ -111,7 +110,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        deleteByIdUseCase.execute(id);
+        deleteProductByIdUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 
