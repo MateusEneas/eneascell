@@ -1,10 +1,7 @@
 package com.eneas.eneascell.category.controllers;
 
 import com.eneas.eneascell.category.dto.CategoryDTO;
-import com.eneas.eneascell.category.usecase.CreateCategoryUseCase;
-import com.eneas.eneascell.category.usecase.DeleteCategoryByIdUseCase;
-import com.eneas.eneascell.category.usecase.ListByIdCategoryUseCase;
-import com.eneas.eneascell.category.usecase.ListCategoryUseCase;
+import com.eneas.eneascell.category.usecase.*;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +27,9 @@ public class CategoryController {
     @Autowired
     private CreateCategoryUseCase createCategoryUseCase;
 
+    @Autowired
+    private UpdateCategoryUseCase updateCategoryUseCase;
+
     @PostMapping("/")
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDto) {
 
@@ -54,6 +54,12 @@ public class CategoryController {
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         deleteCategoryByIdUseCase.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CategoryDTO> update(@PathVariable UUID id, @RequestBody CategoryDTO dto) {
+        CategoryDTO update = updateCategoryUseCase.execute(id, dto);
+        return ResponseEntity.ok().body(update);
     }
 
 
