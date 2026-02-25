@@ -18,7 +18,7 @@ public class CategoryController {
     private ListCategoryUseCase listCategoryUseCase;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> listCategory() {
+    public ResponseEntity<List<CategoryDTO>> listCategories() {
         var result = this.listCategoryUseCase.execute();
         return ResponseEntity.ok(result);
     }
