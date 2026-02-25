@@ -1,16 +1,19 @@
 package com.eneas.eneascell.product.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.eneas.eneascell.category.domain.Category;
+import com.eneas.eneascell.category.dto.CategoryDTO;
+import com.eneas.eneascell.product.domain.Product;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +32,6 @@ public class ProductDTO {
     @NotBlank(message = "A descrição é obrigatória.")
     private String descricao;
 
+    @NotEmpty(message = "O produto deve ter pelo menos uma categoria")
+    private Set<UUID> categoryIds;
 }
