@@ -10,6 +10,7 @@ public class CategoryMapper {
     public CategoryDTO toDTO(Category category) {
         CategoryDTO dto = new CategoryDTO();
         dto.setNome(category.getNome());
+        dto.setId(category.getId());
         return dto;
     }
 

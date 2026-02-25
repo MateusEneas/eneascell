@@ -1,6 +1,7 @@
 package com.eneas.eneascell.product.mapper;
 
 import com.eneas.eneascell.category.domain.Category;
+import com.eneas.eneascell.category.dto.CategoryDTO;
 import org.springframework.stereotype.Component;
 
 import com.eneas.eneascell.product.domain.Product;
@@ -17,7 +18,10 @@ public class ProductMapper {
         dto.setPreco(product.getPreco());
         dto.setQuantidade(product.getQuantidade());
         dto.setDescricao(product.getDescricao());
-        dto.setCategoryIds(product.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
+        dto.setCategory(product.getCategories()
+                .stream()
+                .map(c -> new CategoryDTO(c.getId(), c.getNome()))
+                .collect(Collectors.toSet()));
         return dto;
     }
 

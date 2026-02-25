@@ -1,5 +1,6 @@
 package com.eneas.eneascell.product.usecase;
 
+import com.eneas.eneascell.category.dto.CategoryDTO;
 import com.eneas.eneascell.category.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,10 @@ import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.mapper.ProductMapper;
 import com.eneas.eneascell.product.repositories.ProductRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,13 +34,18 @@ public class CreateProductUseCase {
 
         var entity = mapper.toEntity(dto);
 
-        if (dto.getCategoryIds() == null || dto.getCategoryIds().isEmpty()) {
+        if (dto.getCategory() == null || dto.getCategory().isEmpty()) {
             throw new BusinessException("O produto deve ter pelo menos uma categoria");
         }
 
-        var categories = categoryRepository.findAllById(dto.getCategoryIds());
+        Set<UUID> categoryIds = dto.getCategory()
+                .stream()
+                .map(CategoryDTO::getId)
+                .collect(Collectors.toSet());
 
-        if (categories.size() != dto.getCategoryIds().size()) {
+        var categories = categoryRepository.findAllById(categoryIds);
+
+        if (categories.size() != categoryIds.size()) {
             throw new BusinessException("Uma ou mais categorias não existem.");
         }
 

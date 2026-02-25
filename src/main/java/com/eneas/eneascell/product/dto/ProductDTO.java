@@ -33,5 +33,5 @@ public class ProductDTO {
     private String descricao;
 
     @NotEmpty(message = "O produto deve ter pelo menos uma categoria")
-    private Set<UUID> categoryIds;
+    private Set<CategoryDTO> category;
 }
