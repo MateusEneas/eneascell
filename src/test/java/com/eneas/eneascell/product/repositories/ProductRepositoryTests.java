@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,14 +18,34 @@ public class ProductRepositoryTests {
 
     @Test
     public void saveShouldPersistIdWhenIdIsNull() {
-
         Product product = Factory.createProduct();
         product.setId(null);
 
         product = productRepository.save(product);
 
         Assertions.assertNotNull(product.getId());
+    }
 
+    @Test
+    public void findByIdShouldReturnAnExistingId() {
+
+        Product product = Factory.createProduct();
+
+        product= productRepository.save(product);
+
+        Optional<Product> result = productRepository.findById(product.getId());
+
+        Assertions.assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void findByIdShouldReturnEmptyWhenTheIdDoesNotExist() {
+
+        UUID nonExistentId = UUID.randomUUID();
+
+        Optional<Product> result = productRepository.findById(nonExistentId);
+
+        Assertions.assertFalse(result.isPresent());
     }
 
     @Test
