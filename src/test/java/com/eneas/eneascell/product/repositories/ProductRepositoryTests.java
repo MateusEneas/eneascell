@@ -1,6 +1,7 @@
 package com.eneas.eneascell.product.repositories;
 
 import com.eneas.eneascell.product.domain.Product;
+import com.eneas.eneascell.product.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,21 @@ public class ProductRepositoryTests {
     private ProductRepository productRepository;
 
     @Test
+    public void saveShouldPersistIdWhenIdIsNull() {
+
+        Product product = Factory.createProduct();
+        product.setId(null);
+
+        product = productRepository.save(product);
+
+        Assertions.assertNotNull(product.getId());
+
+    }
+
+    @Test
     public void deleteShouldDeleteObjectWhenIdExists() {
 
-        Product product = new Product();
-        product.setNome("Produto Teste");
-        product.setPreco(BigDecimal.TEN);
-        product.setQuantidade(1);
-        product.setDescricao("Teste");
+        Product product = Factory.createProduct();
 
         product = productRepository.save(product);
 

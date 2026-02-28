@@ -34,4 +34,8 @@ public class ProductDTO {
 
     @NotEmpty(message = "O produto deve ter pelo menos uma categoria")
     private Set<CategoryDTO> category;
+
+    public ProductDTO(Product product, Set<Category> categories) {
+
+    }
 }
