@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import com.eneas.eneascell.product.usecase.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,13 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eneas.eneascell.product.dto.ProductDTO;
-import com.eneas.eneascell.product.usecase.CreateProductUseCase;
-import com.eneas.eneascell.product.usecase.DeleteProductByIdUseCase;
-import com.eneas.eneascell.product.usecase.FilterProductUseCase;
-import com.eneas.eneascell.product.usecase.ListByIdProductUseCase;
-import com.eneas.eneascell.product.usecase.ListProductPaginatedUseCase;
-import com.eneas.eneascell.product.usecase.ListProductUseCase;
-import com.eneas.eneascell.product.usecase.UpdateProductUseCase;
 
 import jakarta.validation.Valid;
 
@@ -54,6 +48,8 @@ public class ProductController {
 
     @Autowired
     private FilterProductUseCase filterProductUseCase;
+    @Autowired
+    private FindProductsByCategoryUseCase findProductsByCategoryUseCase;
 
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDto) {
@@ -118,6 +114,13 @@ public class ProductController {
     public ResponseEntity<ProductDTO> update(@PathVariable UUID id, @RequestBody ProductDTO dto) {
         ProductDTO update = updateProductUseCase.execute(id, dto);
         return ResponseEntity.ok().body(update);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductDTO>> findByCategory(@PathVariable UUID categoryId) {
+
+        var result = findProductsByCategoryUseCase.execute(categoryId);
+        return ResponseEntity.ok(result);
     }
 
 }

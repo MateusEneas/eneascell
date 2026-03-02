@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.eneas.eneascell.product.domain.Product;
 import com.eneas.eneascell.product.dto.ProductDTO;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,6 +24,12 @@ public class ProductMapper {
                 .map(c -> new CategoryDTO(c.getId(), c.getNome()))
                 .collect(Collectors.toSet()));
         return dto;
+    }
+
+    public List<ProductDTO> toDTO (List<Product> products) {
+        return products.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     public Product toEntity(ProductDTO dto) {
