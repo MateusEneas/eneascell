@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -70,6 +71,14 @@ public class GlobalExceptionHandler {
         body.put("Error", "ID fornecido não é um UUID válido!");
         body.put("timestamp", LocalDateTime.now().toString());
 
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", "Não é possível excluir essa categoria, pois existem produtos associados a ela.");
+        body.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.badRequest().body(body);
     }
 
