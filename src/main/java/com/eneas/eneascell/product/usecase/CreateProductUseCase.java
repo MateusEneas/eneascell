@@ -34,22 +34,18 @@ public class CreateProductUseCase {
 
         var entity = mapper.toEntity(dto);
 
-        if (dto.getCategory() == null || dto.getCategory().isEmpty()) {
+        Set<UUID> categoryIds = dto.getCategoryIds();
+        if (categoryIds == null || categoryIds.isEmpty()) {
             throw new BusinessException("O produto deve ter pelo menos uma categoria");
         }
 
-        Set<UUID> categoryIds = dto.getCategory()
-                .stream()
-                .map(CategoryDTO::getId)
-                .collect(Collectors.toSet());
-
-        var categories = categoryRepository.findAllById(categoryIds);
+        var categories = categoryRepository.findAllById(categoryIds).stream().collect(Collectors.toSet());
 
         if (categories.size() != categoryIds.size()) {
             throw new BusinessException("Uma ou mais categorias não existem.");
         }
 
-            entity.getCategories().addAll(categories);
+        entity.getCategories().addAll(categories);
 
         var saved = productRepository.save(entity);
 
