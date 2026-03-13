@@ -2,6 +2,7 @@ package com.eneas.eneascell.product.usecase;
 
 import com.eneas.eneascell.category.domain.Category;
 import com.eneas.eneascell.category.repositories.CategoryRepository;
+import com.eneas.eneascell.exceptions.BusinessException;
 import com.eneas.eneascell.product.domain.Product;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.mapper.ProductMapper;
@@ -17,7 +18,6 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +61,7 @@ public class CreateProductUseCaseTests {
     }
 
     @Test
-    public void createShouldCallSaveAndReturnProductDTO() {
+    public void createShouldSaveProductWhenAllDataIsValid() {
 
         Mockito.when(mapper.toEntity(validProductDTO)).thenReturn(productToSave);
 
@@ -82,6 +82,18 @@ public class CreateProductUseCaseTests {
         Assertions.assertNotNull(result, "O DTO retornado não deve ser null");
         Assertions.assertEquals(validProductDTO.getNome(), result.getNome());
 
+    }
+
+    @Test
+    public void createShouldThrowExceptionWhenNoCategory() {
+        validProductDTO.setCategoryIds(Set.of());
+
+        BusinessException exception = Assertions.assertThrows(
+                BusinessException.class,
+                () -> createProduct.execute(validProductDTO)
+        );
+
+        Assertions.assertEquals("O produto deve ter pelo menos uma categoria", exception.getMessage());
     }
 
 }
