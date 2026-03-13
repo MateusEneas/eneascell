@@ -8,6 +8,7 @@ import com.eneas.eneascell.product.mapper.ProductMapper;
 import com.eneas.eneascell.product.repositories.ProductRepository;
 import com.eneas.eneascell.product.tests.Factory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,39 +36,51 @@ public class CreateProductUseCaseTests {
     @Mock
     private CategoryRepository categoryRepository;
 
-    @Test
-    public void createShouldCallSaveAndReturnProductDTO() {
-        UUID categoryId = UUID.randomUUID();
-        ProductDTO productDTO = Factory.createProductDto();
-        productDTO.setCategoryIds(Set.of(categoryId));;
+    private ProductDTO validProductDTO;
+    private Product productToSave;
+    private Product savedProduct;
+    private Category category;
+    private UUID categoryId;
 
-        Product productToSave = Factory.createProduct();
-        Mockito.when(mapper.toEntity(productDTO)).thenReturn(productToSave);
+    @BeforeEach
+    void setUp() {
+        categoryId = UUID.randomUUID();
 
-        Category category = new Category();
+        validProductDTO = Factory.createProductDto();
+        validProductDTO.setCategoryIds(Set.of(categoryId));
+
+        productToSave = Factory.createProduct();
+
+        category = new Category();
         category.setId(categoryId);
         category.setNome("Categoria Teste");
 
+        savedProduct = Factory.createProduct();
+        savedProduct .setId(UUID.randomUUID());
+        savedProduct.getCategories().add(category);
+    }
+
+    @Test
+    public void createShouldCallSaveAndReturnProductDTO() {
+
+        Mockito.when(mapper.toEntity(validProductDTO)).thenReturn(productToSave);
+
         Mockito.when(categoryRepository
-                .findAllById(productDTO.getCategoryIds()))
+                .findAllById(validProductDTO.getCategoryIds()))
                 .thenReturn(List.of(category));
 
-        Product savedProduct = Factory.createProduct();
-        savedProduct.setId(UUID.randomUUID());
-        savedProduct.getCategories().add(category);
-
         Mockito.when(productRepository.save(productToSave)).thenReturn(savedProduct);
-        Mockito.when(mapper.toDTO(savedProduct)).thenReturn(productDTO);
+        Mockito.when(mapper.toDTO(savedProduct)).thenReturn(validProductDTO);
 
-        ProductDTO result = createProduct.execute(productDTO);
+        ProductDTO result = createProduct.execute(validProductDTO);
 
-        Mockito.verify(mapper).toEntity(productDTO);
-        Mockito.verify(categoryRepository).findAllById(productDTO.getCategoryIds());
+        Mockito.verify(mapper).toEntity(validProductDTO);
+        Mockito.verify(categoryRepository).findAllById(validProductDTO.getCategoryIds());
         Mockito.verify(productRepository).save(productToSave);
         Mockito.verify(mapper).toDTO(savedProduct);
 
         Assertions.assertNotNull(result, "O DTO retornado não deve ser null");
-        Assertions.assertEquals(productDTO.getNome(), result.getNome());
+        Assertions.assertEquals(validProductDTO.getNome(), result.getNome());
 
     }
 
