@@ -1,14 +1,12 @@
-package com.eneas.eneascell.product.useCase;
+package com.eneas.eneascell.product.usecase;
 
 import com.eneas.eneascell.exceptions.NotFoundException;
 import com.eneas.eneascell.product.repositories.ProductRepository;
-import com.eneas.eneascell.product.usecase.DeleteProductByIdUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;

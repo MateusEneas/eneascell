@@ -1,7 +1,6 @@
-package com.eneas.eneascell.product.useCase;
+package com.eneas.eneascell.product.usecase;
 
 import com.eneas.eneascell.product.repositories.ProductRepository;
-import com.eneas.eneascell.product.usecase.CreateProductUseCase;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
