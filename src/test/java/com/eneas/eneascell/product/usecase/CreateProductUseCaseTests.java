@@ -93,7 +93,37 @@ public class CreateProductUseCaseTests {
                 () -> createProduct.execute(validProductDTO)
         );
 
-        Assertions.assertEquals("O produto deve ter pelo menos uma categoria", exception.getMessage());
+        Assertions.assertEquals("O produto deve ter pelo menos uma categoria",
+                exception.getMessage());
+    }
+
+    @Test
+    public void createShouldThrowExceptionWhenCategoryDoesNotExist() {
+        Mockito.when(categoryRepository.findAllById(validProductDTO.getCategoryIds()))
+                .thenReturn(List.of());
+
+        Mockito.when(mapper.toEntity(validProductDTO)).thenReturn(productToSave);
+
+        BusinessException exception = Assertions.assertThrows(
+                BusinessException.class, () -> createProduct.execute(validProductDTO)
+        );
+
+        Assertions.assertEquals("Uma ou mais categorias não existem.",
+                exception.getMessage());
+    }
+
+    @Test
+    public void createShouldThrowExceptionWhenProductNameAlreadyExists() {
+        Mockito.when(productRepository.findByNome(validProductDTO.getNome()))
+                .thenReturn(productToSave);
+
+        BusinessException exception = Assertions.assertThrows(
+                BusinessException.class,
+                () -> createProduct.execute(validProductDTO)
+        );
+
+        Assertions.assertEquals("Já existe um produto com esse nome!",
+                exception.getMessage());
     }
 
 }
