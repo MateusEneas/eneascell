@@ -1,5 +1,6 @@
 package com.eneas.eneascell.product.usecase;
 
+import com.eneas.eneascell.exceptions.BusinessException;
 import com.eneas.eneascell.exceptions.NotFoundException;
 import com.eneas.eneascell.product.domain.Product;
 import com.eneas.eneascell.product.dto.ProductDTO;
@@ -64,6 +65,18 @@ public class UpdateProductUseCaseTests {
 
         assertThrows(NotFoundException.class, () -> useCase.execute(id, new ProductDTO()));
     }
+
+    @Test
+    void shouldThrowExceptionWhenPriceIsInvalid() {
+
+        ProductDTO dto = new ProductDTO();
+        dto.setPreco(BigDecimal.ZERO);
+
+        when(repository.findById(id)).thenReturn(Optional.of(product));
+
+        assertThrows(BusinessException.class, () -> useCase.execute(id, dto));
+    }
+
 
 
 
