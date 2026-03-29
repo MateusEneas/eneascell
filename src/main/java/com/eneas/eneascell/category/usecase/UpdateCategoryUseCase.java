@@ -24,7 +24,7 @@ public class UpdateCategoryUseCase {
     public CategoryDTO execute(UUID id, CategoryDTO dto) {
 
         var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Produto não encontrado!"));
+                .orElseThrow(() -> new NotFoundException("Categoria não encontrado!"));
 
         if (dto.getNome() != null && !dto.getNome().trim().isEmpty()) {
             category.setNome(dto.getNome());
