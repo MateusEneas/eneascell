@@ -4,6 +4,7 @@ import com.eneas.eneascell.category.domain.Category;
 import com.eneas.eneascell.category.dto.CategoryDTO;
 import com.eneas.eneascell.category.mapper.CategoryMapper;
 import com.eneas.eneascell.category.repositories.CategoryRepository;
+import com.eneas.eneascell.exceptions.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +50,13 @@ public class CreateCategoryUseCaseTests {
 
         assertNotNull(result);
         verify(repository).save(category);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNameAlreadyExists() {
+        when(repository.findByNome(dto.getNome())).thenReturn(category);
+
+        assertThrows(BusinessException.class, () -> useCase.execute(dto));
     }
 
 }
