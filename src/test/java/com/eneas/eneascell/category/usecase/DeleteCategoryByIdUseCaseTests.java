@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -30,6 +31,13 @@ public class DeleteCategoryByIdUseCaseTests {
     void setUp() {
         existingId = UUID.randomUUID();
         nonExistingId = UUID.randomUUID();
+    }
+
+    @Test
+    void shouldDeleteWhenIdExists() {
+        when(repository.existsById(existingId)).thenReturn(true);
+        useCase.execute(existingId);
+        verify(repository).deleteById(existingId);
     }
 
     @Test
