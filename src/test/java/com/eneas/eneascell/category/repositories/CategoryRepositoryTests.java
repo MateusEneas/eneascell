@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -37,5 +38,14 @@ public class CategoryRepositoryTests {
 
         Assertions.assertTrue(result.isPresent());
 
+    }
+
+    @Test
+    public void findByIdShouldReturnEmptyWhenTheIdDoesNotExist() {
+        UUID nonExistingId = UUID.randomUUID();
+
+        Optional<Category> result = repository.findById(nonExistingId);
+
+        Assertions.assertFalse(result.isPresent());
     }
 }
