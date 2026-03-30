@@ -1,12 +1,13 @@
 package com.eneas.eneascell.category.repositories;
 
 import com.eneas.eneascell.category.domain.Category;
-import com.eneas.eneascell.category.dto.CategoryDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -23,5 +24,18 @@ public class CategoryRepositoryTests {
         category = repository.save(category);
 
         assertNotNull(category.getId());
+    }
+
+    @Test
+    public void findByIdShouldReturnAnExistingId() {
+        Category category = new Category();
+        category.setNome("Categoria");
+
+        category = repository.save(category);
+
+        Optional<Category> result = repository.findById(category.getId());
+
+        Assertions.assertTrue(result.isPresent());
+
     }
 }
