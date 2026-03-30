@@ -48,4 +48,20 @@ public class CategoryRepositoryTests {
 
         Assertions.assertFalse(result.isPresent());
     }
+
+    @Test
+    public void deleteShouldDeleteObjectWhenIdExists() {
+        Category category = new Category();
+        category.setNome("Categoria");
+
+        category = repository.save(category);
+
+        UUID id = category.getId();
+
+        repository.deleteById(id);
+
+        Optional<Category> result = repository.findById(id);
+        Assertions.assertFalse(result.isPresent());
+
+    }
 }
