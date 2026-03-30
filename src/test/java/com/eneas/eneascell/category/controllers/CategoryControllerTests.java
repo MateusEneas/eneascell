@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,5 +86,15 @@ public class CategoryControllerTests {
         mockMvc.perform(get("/categories/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value("Categoria"));
+    }
+
+    @Test
+    void shouldDeleteCategory() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/categories/{id}", id))
+                .andExpect(status().isNoContent());
+
+        verify(deleteCategoryByIdUseCase).execute(id);
     }
 }
