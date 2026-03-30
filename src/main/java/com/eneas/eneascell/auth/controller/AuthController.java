@@ -22,15 +22,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO dto) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.email(), dto.senha())
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.email(), dto.senha())
             );
 
             String token = jwtService.generateToken(dto.email());
             return ResponseEntity.ok(token);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Email ou senha inválidos");
         }
-    }
 }
