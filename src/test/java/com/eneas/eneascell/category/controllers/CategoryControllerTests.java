@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -96,5 +97,28 @@ public class CategoryControllerTests {
                 .andExpect(status().isNoContent());
 
         verify(deleteCategoryByIdUseCase).execute(id);
+    }
+
+    @Test
+    void shouldUpdateCategory() throws Exception {
+
+        UUID id = UUID.randomUUID();
+
+        CategoryDTO dto = new CategoryDTO();
+        dto.setNome("Atualizado");
+
+        when(updateCategoryUseCase.execute(eq(id), any())).thenReturn(dto);
+
+        mockMvc.perform(patch("/categories/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                        "nome": "Atualizado"
+                        }
+                        """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Atualizado"));
+
+
     }
 }
