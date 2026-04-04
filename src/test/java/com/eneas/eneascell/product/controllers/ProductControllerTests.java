@@ -1,5 +1,7 @@
 package com.eneas.eneascell.product.controllers;
 
+import com.eneas.eneascell.auth.JwtService;
+import com.eneas.eneascell.auth.repository.UserRepository;
 import com.eneas.eneascell.exceptions.GlobalExceptionHandler;
 import com.eneas.eneascell.product.dto.ProductDTO;
 import com.eneas.eneascell.product.usecase.*;
@@ -30,6 +32,13 @@ public class ProductControllerTests {
     private MockMvc mockMvc;
 
     @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+
+    @MockitoBean
     private CreateProductUseCase createProductUseCase;
 
     @MockitoBean
@@ -39,7 +48,7 @@ public class ProductControllerTests {
     private ListByIdProductUseCase listByIdProductUseCase;
 
     @MockitoBean
-    DeleteProductByIdUseCase deleteProductByIdUseCase;
+    private DeleteProductByIdUseCase deleteProductByIdUseCase;
 
     @MockitoBean
     private UpdateProductUseCase updateProductUseCase;
