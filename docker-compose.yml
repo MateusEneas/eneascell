@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: eneascell-db
+    environment:
+      POSTGRES_DB: eneascell
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - eneascell-network
+
+  app:
+    build: .
+    container_name: eneascell-app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/eneascell
+      SPRING_DATASOURCE_USERNAME: docker
+      SPRING_DATASOURCE_PASSWORD: docker
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: eneas-cell-chave-secreta-super-segura-minimo-32-caracteres
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    networks:
+      - eneascell-network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  eneascell-network:
+    driver: bridge
