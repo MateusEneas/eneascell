@@ -3,6 +3,7 @@ package com.eneas.eneascell.auth.controller;
 import com.eneas.eneascell.auth.domain.User;
 import com.eneas.eneascell.auth.dto.CreateUserDTO;
 import com.eneas.eneascell.auth.dto.UpdateUserDTO;
+import com.eneas.eneascell.auth.dto.UserResponseDTO;
 import com.eneas.eneascell.auth.usecase.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,33 +20,29 @@ public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
     private final ListUsersUseCase listUsersUseCase;
-    private GetUserByIdUseCase getUserByIdUseCase;
-    private UpdateUserUseCase updateUserUseCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
 
     @PostMapping("/")
-    public ResponseEntity<User> create(@RequestBody @Valid CreateUserDTO dto) {
-        User user = createUserUseCase.execute(dto);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid CreateUserDTO dto) {
+        return ResponseEntity.ok(createUserUseCase.execute(dto));
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<User>> listAll() {
-        List<User> users = listUsersUseCase.execute();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserResponseDTO>> listAll() {
+        return ResponseEntity.ok(listUsersUseCase.execute());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable UUID id) {
-        User user = getUserByIdUseCase.execute(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(getUserByIdUseCase.execute(id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable UUID id,
+    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id,
                                        @RequestBody @Valid UpdateUserDTO dto) {
-        User user = updateUserUseCase.execute(id, dto);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(updateUserUseCase.execute(id, dto));
     }
 
     @DeleteMapping("/{id}")

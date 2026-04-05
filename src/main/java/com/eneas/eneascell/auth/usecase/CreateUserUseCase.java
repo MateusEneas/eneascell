@@ -2,6 +2,7 @@ package com.eneas.eneascell.auth.usecase;
 
 import com.eneas.eneascell.auth.domain.User;
 import com.eneas.eneascell.auth.dto.CreateUserDTO;
+import com.eneas.eneascell.auth.dto.UserResponseDTO;
 import com.eneas.eneascell.auth.repository.UserRepository;
 import com.eneas.eneascell.exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class CreateUserUseCase {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User execute(CreateUserDTO dto) {
+    public UserResponseDTO execute(CreateUserDTO dto) {
 
         if (userRepository.findByEmail(dto.email()).isPresent()) {
             throw new BusinessException("Email já cadastrado");
@@ -27,7 +28,7 @@ public class CreateUserUseCase {
         user.setSenha(passwordEncoder.encode(dto.senha()));
         user.setRole(dto.role());
 
-        return userRepository.save(user);
+        return UserResponseDTO.from(userRepository.save(user));
     }
 
 

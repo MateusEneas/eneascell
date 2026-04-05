@@ -3,6 +3,7 @@ package com.eneas.eneascell.auth.usecase;
 
 import com.eneas.eneascell.auth.domain.User;
 import com.eneas.eneascell.auth.dto.UpdateUserDTO;
+import com.eneas.eneascell.auth.dto.UserResponseDTO;
 import com.eneas.eneascell.auth.repository.UserRepository;
 import com.eneas.eneascell.exceptions.BusinessException;
 import com.eneas.eneascell.exceptions.NotFoundException;
@@ -19,7 +20,7 @@ public class UpdateUserUseCase {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User execute(UUID id, UpdateUserDTO dto) {
+    public UserResponseDTO execute(UUID id, UpdateUserDTO dto) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
@@ -43,6 +44,6 @@ public class UpdateUserUseCase {
             user.setRole(dto.role());
         }
 
-        return userRepository.save(user);
+        return UserResponseDTO.from(userRepository.save(user));
     }
 }
