@@ -1,11 +1,13 @@
 # 🚀 EneasCell
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
-![Spring Boot](https://img.shields.io/badge/SpringBoot-3.x-brightgreen)
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.5-brightgreen)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
-![Maven](https://img.shields.io/badge/Maven-3.9.0-orange)
+![Maven](https://img.shields.io/badge/Maven-3.9-orange)
 ![Tests](https://img.shields.io/badge/Tests-JUnit%20%7C%20Mockito%20%7C%20MockMvc-blueviolet)
 ![Security](https://img.shields.io/badge/Security-JWT%20%7C%20SpringSecurity-red)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+![CI](https://github.com/MateusEneas/eneascell/actions/workflows/ci.yml/badge.svg)
 
 ---
 
@@ -13,197 +15,232 @@
 
 O **EneasCell** é uma API REST desenvolvida em **Java com Spring Boot**, criada como projeto prático para simular um ambiente corporativo real de backend.
 
-O projeto aplica conceitos modernos como:
-- Clean Architecture
-- Boas práticas de desenvolvimento
-- Testes automatizados
-- Segurança com autenticação JWT
+O projeto aplica conceitos modernos como Clean Architecture, SOLID, testes automatizados, segurança com JWT, containerização com Docker e integração contínua com GitHub Actions.
 
-O sistema atualmente realiza a gestão de **produtos e categorias**, e já conta com **autenticação e autorização de usuários**, evoluindo continuamente para um cenário completo de e-commerce.
+O sistema realiza a gestão de **produtos, categorias e usuários**, com controle de acesso baseado em perfis (**ADMIN / USER**), evoluindo continuamente para um cenário completo de e-commerce.
 
 ---
 
 ## ⚙️ Funcionalidades
 
 ### 📦 Produtos e Categorias
-- CRUD completo de produtos e categorias  
-- Paginação e ordenação  
-- Filtros dinâmicos  
-- Busca por ID e categoria  
-- Tratamento de exceções global  
+- CRUD completo com regras de negócio isoladas em Use Cases
+- Paginação, ordenação e filtros dinâmicos
+- Busca por ID e por categoria
+- Relacionamento ManyToMany entre produto e categoria
+- Tratamento global de exceções com respostas padronizadas
 
 ### 🔐 Autenticação e Segurança
-- Registro de usuários  
-- Login com geração de token JWT  
-- Validação de requisições via filtro de segurança  
-- Proteção de endpoints  
-- Controle de acesso baseado em roles (USER / ADMIN)  
+- Login com geração de token JWT
+- Filtro de autenticação (`JwtFilter`) interceptando todas as requisições
+- Controle de acesso baseado em roles (ADMIN / USER)
+- Senhas criptografadas com BCrypt
+- Proteção de endpoints por perfil
+
+### 👤 Gestão de Usuários (somente ADMIN)
+- Criação de usuários com definição de role
+- Listagem, busca por ID, edição e exclusão
+- Respostas sem exposição de dados sensíveis (UserResponseDTO)
 
 ### 🧪 Testes Automatizados
-- Testes unitários (JUnit 5 + Mockito)  
-- Testes de integração  
-- Testes web de controllers com MockMvc  
-- Validação de regras de negócio e comportamento da API  
+- Testes unitários de Use Cases (JUnit 5 + Mockito)
+- Testes de controllers com MockMvc e @WebMvcTest
+- Testes de segurança validando rotas protegidas (401 / 403)
+- Perfil de teste isolado com banco H2 em memória
+
+### 🐳 DevOps
+- Containerização completa com Dockerfile e Docker Compose
+- Pipeline de CI com GitHub Actions — testes rodam automaticamente a cada push
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias
 
-### Backend
-- Java 21  
-- Spring Boot  
-- Spring Data JPA  
-- Hibernate  
-
-### Segurança
-- Spring Security  
-- JWT (JSON Web Token)  
-
-### Banco de Dados
-- PostgreSQL  
-
-### Testes
-- JUnit 5  
-- Mockito  
-- MockMvc  
-
-### Ferramentas
-- Maven  
-- Git / GitHub  
+| Categoria | Tecnologias |
+|---|---|
+| Backend | Java 21, Spring Boot 3.5 |
+| Segurança | Spring Security, JWT, BCrypt |
+| Persistência | JPA/Hibernate, PostgreSQL |
+| Testes | JUnit 5, Mockito, MockMvc |
+| DevOps | Docker, Docker Compose, GitHub Actions |
+| Documentação | Swagger / OpenAPI |
+| Ferramentas | Maven, Git, GitHub |
 
 ---
 
 ## 🧠 Arquitetura do Projeto
 
-O projeto segue os princípios de **Clean Architecture**, com separação clara de responsabilidades:
+O projeto segue **Clean Architecture** com separação por domínio — cada domínio tem suas próprias camadas independentes:
 
 ```
+src/main/java/com/eneas/eneascell
+├── product/
+│   ├── controller/    → entrada HTTP
+│   ├── usecase/       → regras de negócio
+│   ├── domain/        → entidade pura
+│   ├── repository/    → acesso ao banco
+│   ├── dto/           → transferência de dados
+│   └── mapper/        → conversão entre camadas
+├── category/
+│   └── (mesma estrutura)
+├── auth/
+│   ├── controller/    → login e gestão de usuários
+│   ├── domain/        → User e UserRole
+│   ├── dto/           → LoginDTO, CreateUserDTO, UserResponseDTO
+│   ├── repository/    → UserRepository
+│   ├── usecase/       → casos de uso de usuário
+│   ├── JwtService     → geração e validação de tokens
+│   ├── JwtFilter      → interceptador de requisições
+│   └── SecurityConfig → configuração de segurança
+├── config/
+│   └── SwaggerConfig  → documentação da API
+└── exceptions/
+    ├── BusinessException
+    ├── NotFoundException
+    └── GlobalExceptionHandler
+```
 
-src/main/java
-├─ com.eneas.eneascell
-│  ├─ product
-│  ├─ category
-│  ├─ auth
-│  │  ├─ controller
-│  │  ├─ domain
-│  │  ├─ dto
-│  │  ├─ repository
-│  │  └─ usecase
-│  └─ exception
+### Princípio de cada camada
 
-````
-
-### 🔹 Camadas principais:
-- **Controller:** entrada da API (HTTP)
-- **UseCase:** regras de negócio
-- **Domain:** entidades do sistema
-- **Repository:** acesso a dados
-- **DTO:** comunicação entre camadas
+- **Controller** — recebe a requisição HTTP e delega para o Use Case
+- **Use Case** — executa a regra de negócio, chama o Repository
+- **Domain** — entidade pura, sem dependência de framework
+- **Repository** — acesso ao banco de dados
+- **DTO** — transporta dados entre camadas sem expor a entidade
 
 ---
 
 ## 🔐 Como funciona a autenticação (JWT)
 
-O sistema utiliza **JWT (JSON Web Token)** para autenticação.
-
-### 🔑 Fluxo:
-
-1. Usuário realiza login:
-```http
+```
 POST /auth/login
-````
+        ↓
+AuthenticationManager verifica email e senha
+        ↓
+JwtService gera o token com email do usuário
+        ↓
+Cliente recebe o token
 
-2. Recebe um token JWT:
+--- próximas requisições ---
 
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIs..."
-}
+Requisição com Authorization: Bearer {token}
+        ↓
+JwtFilter intercepta e valida o token
+        ↓
+Extrai o email e busca o usuário no banco
+        ↓
+Registra no SecurityContextHolder
+        ↓
+SecurityConfig verifica o role e libera ou bloqueia
 ```
-
-3. Envia o token nas próximas requisições:
-
-```http
-Authorization: Bearer SEU_TOKEN
-```
-
-4. O sistema valida o token através de um filtro (`JwtFilter`) e libera o acesso conforme a role.
 
 ---
 
 ## ▶️ Como rodar o projeto
 
-### Pré-requisitos:
+### ✅ Opção 1 — Docker Compose (recomendado)
 
-* Java 21
-* Maven
-* PostgreSQL
-
----
-
-### 1. Clone o repositório
+Pré-requisitos: **Docker** instalado.
 
 ```bash
+# Clone o repositório
 git clone https://github.com/MateusEneas/eneascell.git
+cd eneascell
+
+# Sobe a aplicação + banco de dados
+docker compose up --build
 ```
 
-### 2. Configure o banco de dados
+A aplicação sobe em `http://localhost:8080`.
 
-Altere o `application.properties` ou `application.yml` com suas credenciais.
+O primeiro admin é criado automaticamente pelo DataSeeder:
+
+```
+email: admin@eneas.com
+senha: admin123
+```
 
 ---
 
-### 3. Execute o projeto
+### Opção 2 — Rodando localmente
+
+Pré-requisitos: **Java 21**, **Maven**, **PostgreSQL**.
 
 ```bash
+# Clone o repositório
+git clone https://github.com/MateusEneas/eneascell.git
+cd eneascell
+
+# Configure o banco no application-dev.properties
+# Rode a aplicação
 mvn spring-boot:run
 ```
 
 ---
 
+## 📖 Documentação da API
+
+Com a aplicação rodando, acesse o Swagger:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+### Como autenticar no Swagger
+
+1. Faça `POST /auth/login` com as credenciais
+2. Copie o token da resposta
+3. Clique em **Authorize 🔒** no topo da página
+4. Cole o token e clique em Authorize
+5. Todos os endpoints passam a funcionar autenticados
+
+---
+
 ## 🧪 Testes
-
-O projeto possui cobertura de testes em diferentes níveis:
-
-* Testes unitários
-* Testes de integração
-* Testes web de controllers
-
-### Executar testes:
 
 ```bash
 mvn test
 ```
 
+O projeto usa perfil `test` com banco H2 em memória — não precisa de PostgreSQL para rodar os testes.
+
+O pipeline de CI roda os testes automaticamente a cada push no GitHub.
+
 ---
 
 ## 📬 Exemplos de Requisição
 
-### Criar Produto
-
-```json
-POST /products
-{
-  "nome": "Capinha iPhone",
-  "preco": 25.00,
-  "quantidade": 10,
-  "descricao": "Capinha transparente",
-  "categoryIds": [
-    "id-categoria-1",
-    "id-categoria-2"
-  ]
-}
-```
-
----
-
 ### Login
-
 ```json
 POST /auth/login
 {
-  "email": "user@email.com",
-  "password": "123456"
+    "email": "admin@eneas.com",
+    "senha": "admin123"
+}
+```
+
+### Criar Produto
+```json
+POST /produto/
+Authorization: Bearer {token}
+{
+    "nome": "Capinha iPhone",
+    "preco": 25.00,
+    "quantidade": 10,
+    "descricao": "Capinha transparente",
+    "categoryIds": ["uuid-da-categoria"]
+}
+```
+
+### Criar Usuário (somente ADMIN)
+```json
+POST /user/
+Authorization: Bearer {token}
+{
+    "nome": "Vendedor",
+    "email": "vendedor@eneas.com",
+    "senha": "123456",
+    "role": "USER"
 }
 ```
 
@@ -211,34 +248,22 @@ POST /auth/login
 
 ## 🚧 Próximos Passos
 
-* Implementar autorização mais granular por roles
-* Melhorar cobertura de testes de segurança
-* Adicionar módulo de vendas
-* Integração com frontend
-* Deploy em ambiente cloud
-
----
-
-## 📌 Objetivo do Projeto
-
-Este projeto foi desenvolvido com foco em:
-
-* Consolidar conhecimentos em backend Java
-* Simular cenários reais de desenvolvimento
-* Evoluir continuamente como desenvolvedor
+- [ ] Frontend em Angular com painel administrativo
+- [ ] Módulo de vendas
+- [ ] Refresh Token
+- [ ] Deploy em ambiente cloud
 
 ---
 
 ## 👨‍💻 Autor
 
 **Mateus Enéas**
-🔗 [https://github.com/MateusEneas](https://github.com/MateusEneas)
-🔗 [https://linkedin.com/in/mateus-eneas](https://linkedin.com/in/mateus-eneas)
+
+🔗 [GitHub](https://github.com/MateusEneas)
+🔗 [LinkedIn](https://linkedin.com/in/mateus-eneas)
 
 ---
 
 ## 📄 Licença
 
 Projeto de uso pessoal para fins de estudo e portfólio.
-
-```
