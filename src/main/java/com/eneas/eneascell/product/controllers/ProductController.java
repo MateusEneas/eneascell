@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.eneas.eneascell.product.usecase.*;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +52,7 @@ public class ProductController {
     @Autowired
     private FindProductsByCategoryUseCase findProductsByCategoryUseCase;
 
+    @Operation(summary = "Criar um produto")
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDto) {
 
@@ -59,18 +61,21 @@ public class ProductController {
 
     }
 
+    @Operation(summary = "Lista todos os produtos")
     @GetMapping("/")
     public ResponseEntity<List<ProductDTO>> listProduct() {
         var result = this.listProductUseCase.execute();
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Lista produto por ID")
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> listById(@PathVariable UUID id) {
         ProductDTO dto = listByIdProductUseCase.execute(id);
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(summary = "Listar produto por pagina")
     @GetMapping("/page")
     public ResponseEntity<Page<ProductDTO>> paginate(
             Pageable pageable) {
@@ -86,6 +91,7 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
     }
 
+    @Operation(summary = "Filtrar produto")
     @GetMapping("/filter")
     public ResponseEntity<Page<ProductDTO>> filterProducts(
             @RequestParam(required = false) String nome,
@@ -104,18 +110,21 @@ public class ProductController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Deletar produto")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         deleteProductByIdUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Atualiza o produto")
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable UUID id, @RequestBody ProductDTO dto) {
         ProductDTO update = updateProductUseCase.execute(id, dto);
         return ResponseEntity.ok().body(update);
     }
 
+    @Operation(summary = "Lista todos os produtos por categoria")
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductDTO>> findByCategory(@PathVariable UUID categoryId) {
 

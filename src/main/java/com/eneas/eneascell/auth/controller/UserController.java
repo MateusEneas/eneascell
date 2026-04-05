@@ -5,6 +5,7 @@ import com.eneas.eneascell.auth.dto.CreateUserDTO;
 import com.eneas.eneascell.auth.dto.UpdateUserDTO;
 import com.eneas.eneascell.auth.dto.UserResponseDTO;
 import com.eneas.eneascell.auth.usecase.*;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,27 +25,32 @@ public class UserController {
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
 
+    @Operation(summary = "Criar usuário")
     @PostMapping("/")
     public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid CreateUserDTO dto) {
         return ResponseEntity.ok(createUserUseCase.execute(dto));
     }
 
+    @Operation(summary = "Lista todos os usuários")
     @GetMapping("/")
     public ResponseEntity<List<UserResponseDTO>> listAll() {
         return ResponseEntity.ok(listUsersUseCase.execute());
     }
 
+    @Operation(summary = "Listar usuário por ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(getUserByIdUseCase.execute(id));
     }
 
+    @Operation(summary = "Atualizar usuário")
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id,
                                        @RequestBody @Valid UpdateUserDTO dto) {
         return ResponseEntity.ok(updateUserUseCase.execute(id, dto));
     }
 
+    @Operation(summary = "Deletar usuário")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         deleteUserUseCase.execute(id);

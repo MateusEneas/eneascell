@@ -2,6 +2,7 @@ package com.eneas.eneascell.auth.controller;
 
 import com.eneas.eneascell.auth.JwtService;
 import com.eneas.eneascell.auth.dto.LoginDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    @Operation(summary = "Se autenticar e gerar token")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO dto) {
         authenticationManager.authenticate(
