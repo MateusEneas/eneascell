@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,11 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<List<UserResponseDTO>> listAll() {
         return ResponseEntity.ok(listUsersUseCase.execute());
+    }
+
+    @GetMapping("/perfil")
+    public ResponseEntity<UserResponseDTO> getPerfil(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(UserResponseDTO.from(user));
     }
 
     @Operation(summary = "Listar usuário por ID")
