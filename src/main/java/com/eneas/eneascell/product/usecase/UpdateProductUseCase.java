@@ -1,5 +1,6 @@
 package com.eneas.eneascell.product.usecase;
 
+import com.eneas.eneascell.category.repositories.CategoryRepository;
 import com.eneas.eneascell.exceptions.BusinessException;
 import com.eneas.eneascell.exceptions.NotFoundException;
 import com.eneas.eneascell.product.domain.Product;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,6 +24,9 @@ public class UpdateProductUseCase {
 
     @Autowired
     private ProductMapper mapper;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public ProductDTO execute(UUID id, ProductDTO dto) {
 
@@ -45,6 +50,23 @@ public class UpdateProductUseCase {
 
         if (dto.getDescricao() != null && !dto.getDescricao().trim().isEmpty()) {
             product.setDescricao(dto.getDescricao());
+        }
+
+        if (dto.getCategoryIds() != null) {
+            if (dto.getCategoryIds().isEmpty()) {
+                throw new BusinessException("O produto deve ter pelo menos uma categoria");
+            }
+
+            var categories = categoryRepository.findAllById(dto.getCategoryIds())
+                    .stream()
+                    .collect(Collectors.toSet());
+
+            if (categories.size() != dto.getCategoryIds().size()) {
+                throw new BusinessException("Uma ou mais categorias não existem!");
+            }
+
+            product.getCategories().clear();
+            product.getCategories().addAll(categories);
         }
 
         Product saved = productRepository.save(product);

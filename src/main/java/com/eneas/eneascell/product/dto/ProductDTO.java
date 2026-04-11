@@ -19,6 +19,8 @@ import lombok.*;
 @NoArgsConstructor
 public class ProductDTO {
 
+    private UUID id;
+
     @NotBlank(message = "O nome do produto é obrigatório.")
     private String nome;
 
