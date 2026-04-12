@@ -1,4 +1,4 @@
-# 🚀 EneasCell
+# 🚀 EneasCell — Backend
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-3.5-brightgreen)
@@ -13,11 +13,11 @@
 
 ## 📌 Sobre o Projeto
 
-O **EneasCell** é uma API REST desenvolvida em **Java com Spring Boot**, criada como projeto prático para simular um ambiente corporativo real de backend.
+O **EneasCell** é um sistema completo de gestão de loja de celulares, desenvolvido com **Java e Spring Boot** no backend e **Angular 21** no frontend.
 
-O projeto aplica conceitos modernos como Clean Architecture, SOLID, testes automatizados, segurança com JWT, containerização com Docker e integração contínua com GitHub Actions.
+O backend é uma API REST que aplica conceitos modernos como Clean Architecture, SOLID, testes automatizados, segurança com JWT, containerização com Docker e integração contínua com GitHub Actions.
 
-O sistema realiza a gestão de **produtos, categorias e usuários**, com controle de acesso baseado em perfis (**ADMIN / USER**), evoluindo continuamente para um cenário completo de e-commerce.
+🔗 **Frontend (Painel Admin):** [github.com/MateusEneas/eneascell-admin](https://github.com/MateusEneas/eneascell-admin)
 
 ---
 
@@ -32,24 +32,27 @@ O sistema realiza a gestão de **produtos, categorias e usuários**, com control
 
 ### 🔐 Autenticação e Segurança
 - Login com geração de token JWT
-- Filtro de autenticação (`JwtFilter`) interceptando todas as requisições
-- Controle de acesso baseado em roles (ADMIN / USER)
+- Filtro de autenticação (JwtFilter) interceptando todas as requisições
+- Controle de acesso baseado em roles (ADMIN/USER)
 - Senhas criptografadas com BCrypt
 - Proteção de endpoints por perfil
+- Rotas públicas para catálogo de produtos
 
 ### 👤 Gestão de Usuários (somente ADMIN)
 - Criação de usuários com definição de role
 - Listagem, busca por ID, edição e exclusão
+- Endpoint de perfil para usuário logado
 - Respostas sem exposição de dados sensíveis (UserResponseDTO)
 
 ### 🧪 Testes Automatizados
-- Testes unitários de Use Cases (JUnit 5 + Mockito)
-- Testes de controllers com MockMvc e @WebMvcTest
-- Testes de segurança validando rotas protegidas (401 / 403)
+- Testes unitários de Use Cases com JUnit 5 e Mockito
+- Testes de controller com MockMvc e @WebMvcTest
+- Testes de segurança validando rotas protegidas (401/403)
 - Perfil de teste isolado com banco H2 em memória
 
 ### 🐳 DevOps
 - Containerização completa com Dockerfile e Docker Compose
+- DataSeeder criando admin automaticamente na primeira execução
 - Pipeline de CI com GitHub Actions — testes rodam automaticamente a cada push
 
 ---
@@ -70,7 +73,7 @@ O sistema realiza a gestão de **produtos, categorias e usuários**, com control
 
 ## 🧠 Arquitetura do Projeto
 
-O projeto segue **Clean Architecture** com separação por domínio — cada domínio tem suas próprias camadas independentes:
+O projeto segue **Clean Architecture** com separação por domínio:
 
 ```
 src/main/java/com/eneas/eneascell
@@ -93,20 +96,13 @@ src/main/java/com/eneas/eneascell
 │   ├── JwtFilter      → interceptador de requisições
 │   └── SecurityConfig → configuração de segurança
 ├── config/
-│   └── SwaggerConfig  → documentação da API
+│   ├── SwaggerConfig  → documentação da API
+│   └── CorsConfig     → configuração de CORS
 └── exceptions/
     ├── BusinessException
     ├── NotFoundException
     └── GlobalExceptionHandler
 ```
-
-### Princípio de cada camada
-
-- **Controller** — recebe a requisição HTTP e delega para o Use Case
-- **Use Case** — executa a regra de negócio, chama o Repository
-- **Domain** — entidade pura, sem dependência de framework
-- **Repository** — acesso ao banco de dados
-- **DTO** — transporta dados entre camadas sem expor a entidade
 
 ---
 
@@ -129,8 +125,6 @@ JwtFilter intercepta e valida o token
         ↓
 Extrai o email e busca o usuário no banco
         ↓
-Registra no SecurityContextHolder
-        ↓
 SecurityConfig verifica o role e libera ou bloqueia
 ```
 
@@ -143,36 +137,26 @@ SecurityConfig verifica o role e libera ou bloqueia
 Pré-requisitos: **Docker** instalado.
 
 ```bash
-# Clone o repositório
 git clone https://github.com/MateusEneas/eneascell.git
 cd eneascell
-
-# Sobe a aplicação + banco de dados
 docker compose up --build
 ```
 
 A aplicação sobe em `http://localhost:8080`.
 
-O primeiro admin é criado automaticamente pelo DataSeeder:
-
+O primeiro admin é criado automaticamente:
 ```
 email: admin@eneas.com
 senha: admin123
 ```
-
----
 
 ### Opção 2 — Rodando localmente
 
 Pré-requisitos: **Java 21**, **Maven**, **PostgreSQL**.
 
 ```bash
-# Clone o repositório
 git clone https://github.com/MateusEneas/eneascell.git
 cd eneascell
-
-# Configure o banco no application-dev.properties
-# Rode a aplicação
 mvn spring-boot:run
 ```
 
@@ -187,12 +171,10 @@ http://localhost:8080/swagger-ui/index.html
 ```
 
 ### Como autenticar no Swagger
-
 1. Faça `POST /auth/login` com as credenciais
 2. Copie o token da resposta
-3. Clique em **Authorize 🔒** no topo da página
+3. Clique em **Authorize 🔒**
 4. Cole o token e clique em Authorize
-5. Todos os endpoints passam a funcionar autenticados
 
 ---
 
@@ -202,9 +184,7 @@ http://localhost:8080/swagger-ui/index.html
 mvn test
 ```
 
-O projeto usa perfil `test` com banco H2 em memória — não precisa de PostgreSQL para rodar os testes.
-
-O pipeline de CI roda os testes automaticamente a cada push no GitHub.
+O projeto usa perfil `test` com banco H2 em memória. O pipeline de CI roda os testes automaticamente a cada push.
 
 ---
 
@@ -224,8 +204,8 @@ POST /auth/login
 POST /produto/
 Authorization: Bearer {token}
 {
-    "nome": "Capinha iPhone",
-    "preco": 25.00,
+    "nome": "Capinha iPhone 14",
+    "preco": 25.90,
     "quantidade": 10,
     "descricao": "Capinha transparente",
     "categoryIds": ["uuid-da-categoria"]
@@ -248,9 +228,8 @@ Authorization: Bearer {token}
 
 ## 🚧 Próximos Passos
 
-- [ ] Frontend em Angular com painel administrativo
+- [ ] Audit Log — relatório de ações por usuário
 - [ ] Módulo de vendas
-- [ ] Refresh Token
 - [ ] Deploy em ambiente cloud
 
 ---
@@ -258,7 +237,6 @@ Authorization: Bearer {token}
 ## 👨‍💻 Autor
 
 **Mateus Enéas**
-
 🔗 [GitHub](https://github.com/MateusEneas)
 🔗 [LinkedIn](https://linkedin.com/in/mateus-eneas)
 
